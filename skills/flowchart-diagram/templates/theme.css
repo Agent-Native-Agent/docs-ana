@@ -1,0 +1,90 @@
+/* 다이어그램 테마 — 색은 모두 토큰(var)으로만 쓴다. 밝은·어두운 화면을 토큰만 바꿔 맞춘다.
+   이미 디자인 토큰이 있는 앱에 넣을 때는 :root 블록을 지우고 앱 토큰 이름(--surface, --text, --acc …)에 맞춘다. */
+:root {
+  --surface: #FFFFFF; --surface-2: #F9FAFB;
+  --text: #191F28; --text-sub: #4E5968; --text-weak: #6B7684;
+  --line: #E5E8EB;
+  --acc: #3182F6; --acc-strong: #1B64DA; --acc-weak: #E8F1FE;
+  --map-bg: #FFF6E5; --map-line: #E8A33D;
+  --zone-b: #EEF5FF;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #1F2126; --surface-2: #25272E;
+    --text: #F2F4F6; --text-sub: #C2C7CE; --text-weak: #97A1AD;
+    --line: #2E3138;
+    --acc: #5C9DFF; --acc-strong: #9CC2FF; --acc-weak: #16335C;
+    --map-bg: #3A2A10; --map-line: #D99A3A;
+    --zone-b: #172A45;
+  }
+}
+:root[data-theme="dark"] {
+  --surface: #1F2126; --surface-2: #25272E;
+  --text: #F2F4F6; --text-sub: #C2C7CE; --text-weak: #97A1AD;
+  --line: #2E3138;
+  --acc: #5C9DFF; --acc-strong: #9CC2FF; --acc-weak: #16335C;
+  --map-bg: #3A2A10; --map-line: #D99A3A;
+  --zone-b: #172A45;
+}
+
+/* 그림 크기: 넓은 그림은 PC, 세로 그림은 휴대폰(640px 이하) */
+.dg { display: block; width: 100%; height: auto; margin: 4px auto 0; }
+.dg-wide { max-width: 1040px; }
+.dg-tall { display: none; max-width: 420px; }
+@media (max-width: 640px) { .dg-wide { display: none; } .dg-tall { display: block; } }
+
+/* 상자 */
+.dg-box   { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.5; }
+.dg-core  { fill: var(--acc-weak); stroke: var(--acc); stroke-width: 1.5; }
+.dg-inner { fill: var(--surface); stroke: var(--acc); stroke-width: 1; stroke-opacity: .55; }
+.dg-ext   { fill: var(--surface); stroke: var(--text-weak); stroke-width: 1.4; stroke-dasharray: 5 4; }
+
+/* 글자 */
+.dg text { fill: var(--text); font-family: inherit; }
+.dg .dg-title { font-size: 19px; font-weight: 900; }
+.dg .dg-t { font-size: 13.5px; font-weight: 800; }
+.dg .dg-sub { font-size: 11.5px; fill: var(--text-sub); }
+.dg .dg-note { font-size: 11.5px; fill: var(--acc-strong); font-weight: 700; }
+/* 화살표 위 라벨: 바탕색 테두리(halo)로 선 위에서도 읽힌다 */
+.dg .dg-lbl { font-size: 11.5px; font-weight: 700; fill: var(--text-sub); paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round; }
+
+/* 선 */
+.dg-arrow { stroke: var(--text-weak); stroke-width: 1.6; fill: none; }
+.dg-headfill { fill: var(--text-weak); }
+.dg-dash { stroke-dasharray: 5 4; }
+.dg-dot { fill: var(--text-weak); }
+
+/* 순서도·관계도 전용 */
+.dg-flowwrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.dg-flow { display: block; width: 100%; height: auto; }
+@media (max-width: 640px) { .dg-flowwrap.scroll::after { content: '← 옆으로 밀어 전체 보기 →'; display: block; text-align: center; font-size: 11.5px; color: var(--text-weak); margin-top: 4px; } }
+.dg-map  { fill: var(--map-bg); stroke: var(--map-line); stroke-width: 1.5; }        /* 분류·통계처럼 '모아 보는 것' */
+.dg-term { fill: var(--surface); stroke: var(--acc); stroke-width: 1.6; }              /* 시작·끝 */
+.dg-relbox { fill: var(--surface); stroke: var(--acc); stroke-width: 1.6; }            /* 마름모: 판단·연결 */
+.dg-zone { fill: var(--surface-2); stroke: none; }
+.dg-zone.b { fill: var(--zone-b); fill-opacity: .55; }
+.dg .dg-zt { font-size: 12.5px; font-weight: 800; fill: var(--text-sub); }
+/* 관계 수(1 · n · 0..1)와 위쪽 알림 띠 */
+.dg .dg-card { font-size: 12px; font-weight: 900; fill: var(--acc-strong); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.dg-nnpill { fill: var(--acc); }
+.dg .dg-nn { font-size: 12px; font-weight: 900; fill: #fff; }
+.dg-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.dg-table th, .dg-table td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.dg-table th { color: var(--text-sub); font-weight: 800; font-size: 12.5px; }
+.dg-table td.k { white-space: nowrap; font-weight: 800; color: var(--acc-strong); }
+.dg-table td:first-child, .dg-table th:first-child { min-width: 6.5em; }
+
+/* v1.2 — 공공 문서용 절제된 배치 요소: 묶음(점선) · 원형 역할 · 강조 · 목록 상자 · 선 색 3가지 */
+.dg-group { fill: none; stroke: var(--text-weak); stroke-width: 1.2; }
+.dg-group.t-blue { stroke: #6E8DBF; fill: #F5F8FD; } .dg-group.t-green { stroke: #7FAE8E; fill: #F5FAF6; } .dg-group.t-amber { stroke: #C9A867; fill: #FFFCF4; }
+.dg .dg-gt { font-size: 12px; font-weight: 800; fill: var(--text-sub); }
+.dg .dg-gt.t-blue { fill: #3B6BB5; } .dg .dg-gt.t-green { fill: #3C7D52; } .dg .dg-gt.t-amber { fill: #9A6E1F; }
+.dg-actor { fill: #EAF0FA; stroke: #3B6BB5; stroke-width: 1.6; }
+.dg .dg-at { fill: #23406E; }
+.dg-accent { fill: #FFF4DC; stroke: #C29A4B; stroke-width: 1.5; }
+.dg-plain { fill: none; stroke: none; }
+.dg-item { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.dg .dg-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; }
+.dg-arrow.t-blue { stroke: #3B6BB5; } .dg-headfill.t-blue { fill: #3B6BB5; } .dg .dg-lbl.t-blue { fill: #2F5A9E; }
+.dg-arrow.t-green { stroke: #3C8D5A; } .dg-headfill.t-green { fill: #3C8D5A; } .dg .dg-lbl.t-green { fill: #2F7149; }
+.dg-arrow.t-amber { stroke: #B7832F; } .dg-headfill.t-amber { fill: #B7832F; } .dg .dg-lbl.t-amber { fill: #8F651F; }

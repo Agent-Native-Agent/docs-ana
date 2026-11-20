@@ -1,0 +1,306 @@
+{
+  "$comment": "ANA feature manifest. Each feature lists the skill that ports it, standalone modules to copy as-is, and anchors: strings that exist in the code once the feature is in. skills/ana-update/scripts/ana-diff.mjs searches a target ANA's .js/.html files for these anchors to report present / partial / missing. test.cjs checks that every anchor exists in this repo, so keep them in sync when you rename things.",
+  "version": 1,
+  "runtime": {
+    "file": "channel-core.js",
+    "note": "Shared runtime. Never patch it per ANA. If it differs from upstream, replace the whole file (ask the user first — every ANA on the host shares it).",
+    "anchors": [
+      "TARGETS_FILE",
+      "transcripts",
+      "parseDialog",
+      "ensureNotInCopyMode",
+      "anaNameOf",
+      "defaultSession",
+      "isAnaSession"
+    ]
+  },
+  "features": [
+    {
+      "id": "chat-layout",
+      "title": "Chat window — Claude app layout",
+      "skill": "chat-window",
+      "summary": "User bubbles, markdown replies without bubbles, 'Ran 3 commands ›' tool groups, ✳ elapsed-time spinner, floating blurred composer, ↓ jump button with new-message dot, keyboard-fit on iOS.",
+      "anchors": [
+        "chatDock",
+        "jumpBtn",
+        "function pinChat",
+        "function updateJump",
+        "function groupActs",
+        "kb-open",
+        "--vvh"
+      ]
+    },
+    {
+      "id": "chat-session-combo",
+      "title": "Session combo box",
+      "skill": "chat-window",
+      "summary": "Full-width, left-aligned agent-session combo in the chat header; popup matches its width; 'You' only on the session this screen views.",
+      "anchors": [
+        "connPill",
+        "tmuxCfg",
+        "function refreshTmuxCfg",
+        "function applyTmuxTarget",
+        "Open in another tab"
+      ]
+    },
+    {
+      "id": "chat-delivery",
+      "title": "Reliable send state",
+      "skill": "chat-window",
+      "summary": "Optimistic bubble → sent → acked (agent started working) → confirmed; handles [Pasted text] echoes so delivered messages never show Unconfirmed/Resend.",
+      "anchors": [
+        "function addOptimistic",
+        "function reconcile",
+        "function echoOf",
+        "busyAtSend"
+      ]
+    },
+    {
+      "id": "chat-agent-log",
+      "title": "Structured chat log (Claude Code + Codex)",
+      "skill": "chat-window",
+      "summary": "Render the chat from the agent's own JSONL log instead of the screen mirror: ~/.claude/projects/<cwd>/*.jsonl for Claude Code, ~/.codex/sessions/**/rollout-*.jsonl for Codex. Real model name in the composer. Opens with the latest 40 items and loads earlier ones 40 at a time as you scroll up (scroll position kept).",
+      "copy": [
+        "agent-log.js"
+      ],
+      "anchors": [
+        "agent-log.js",
+        "/api/agentlog",
+        "function pollLog",
+        "function logItemHtml",
+        "function mdHtml",
+        "codexModelName",
+        "function codexRolloutFiles",
+        "findCodexRollout",
+        "function loadOlder",
+        "pageItems",
+        "logMore"
+      ]
+    },
+    {
+      "id": "chat-model-picker",
+      "title": "Model & effort picker sheet",
+      "skill": "chat-window",
+      "summary": "Tap the model pill → bottom sheet like the Claude app. Claude Code: /model + /effort, result read back from the screen. Codex: model catalog from ~/.codex/models_cache.json, picked through Codex's own menu.",
+      "copy": [
+        "codex-settings.js"
+      ],
+      "anchors": [
+        "msheet",
+        "function openModelSheet",
+        "function applyAgentSetting",
+        "/api/agent-setting",
+        "/api/agent-models",
+        "codex-settings.js"
+      ]
+    },
+    {
+      "id": "chat-permissions",
+      "title": "Permission mode picker (Claude Code + Codex)",
+      "skill": "chat-window",
+      "summary": "Model sheet › Permissions shows the agent's current permission mode and switches it. Claude Code: reads the status line and presses Shift+Tab until the wanted mode shows (manual · accept edits · plan · auto · bypass). Codex: /permissions menu (Ask for approval · Approve for me · Full Access) with its extra confirmation. Modes without prompts ask first; A shield icon in the composer shows the mode at a glance (red with \"!\" when it never asks) and opens a permissions-only sheet.",
+      "copy": [
+        "permission-mode.js"
+      ],
+      "anchors": [
+        "permission-mode.js",
+        "/api/agent-permission",
+        "function applyPerm",
+        "function renderPerm",
+        "mPermList",
+        "function confirmAsk",
+        "permBtn",
+        "function openPermSheet",
+        "function renderPermBtn"
+      ]
+    },
+    {
+      "id": "chat-limits",
+      "title": "Plan usage rings (5-hour · weekly)",
+      "skill": "chat-window",
+      "summary": "Two ring charts in the composer that fill as the plan limit is used; tap for % and reset time. Claude: api.anthropic.com/api/oauth/usage with the local login. Codex: rate_limits from its rollout log.",
+      "anchors": [
+        "ring5h",
+        "ringWeek",
+        "limitPop",
+        "function pollLimits",
+        "/api/limits",
+        "api/oauth/usage"
+      ]
+    },
+    {
+      "id": "chat-voice",
+      "title": "Voice dictation",
+      "skill": "chat-window",
+      "summary": "Mic button using the browser's SpeechRecognition; dictates into the input at the cursor. Hidden when unsupported.",
+      "anchors": [
+        "micBtn",
+        "webkitSpeechRecognition"
+      ]
+    },
+    {
+      "id": "chat-attachments",
+      "title": "File attachments",
+      "skill": "chat-window",
+      "summary": "＋ button uploads files to .ana/uploads and sends their paths with the message; images show as thumbnails in the bubble.",
+      "anchors": [
+        "attachBtn",
+        "fileInput",
+        "/api/upload",
+        "function attachFiles"
+      ]
+    },
+    {
+      "id": "context-chips",
+      "title": "Context chips (Chip mode)",
+      "skill": "context-chips",
+      "summary": "Chip toggle; tap any on-screen item to attach it to the next message as a context chip; refresh button rescans the page.",
+      "anchors": [
+        "modeToggle",
+        "chipScanBtn",
+        "function scanChipTargets",
+        "function registerChipTarget",
+        "function applyChipAffordance",
+        "function buildMessage"
+      ]
+    },
+    {
+      "id": "context-draw",
+      "title": "Draw on screen (annotation)",
+      "skill": "context-chips",
+      "summary": "Pen button next to refresh; draw red/magenta/blue marks, then 'Add to chat' attaches an annotated screenshot + the items under the marks. Opens the chat right away on mobile.",
+      "anchors": [
+        "drawBtn",
+        "drawLayer",
+        "drawCanvas",
+        "function openDraw",
+        "function drawTargetsUnder",
+        "modern-screenshot"
+      ]
+    },
+    {
+      "id": "agent-requests",
+      "title": "Requests (agent → user)",
+      "skill": "agent-requests",
+      "summary": "Requests tab: everything the agent needs from you in one list — pending data-change diffs plus approval / decision / access requests, work only you can do (action) and missing information (info). Sub-tabs Waiting · In progress · Done. Every card says in plain words what's going on, what is asked, what it changes and what happens if not (why / ask / effect / ifNot). Answer, mark done or dismiss; Ask the agent has it fill the list.",
+      "anchors": [
+        "/api/requests",
+        "/api/request-act",
+        "requestsView",
+        "function refreshRequests",
+        "function renderRequestsAll",
+        "function reqCard",
+        "/api/proposals",
+        "function plainHtml",
+        "STATUS_TABS",
+        "function bucketList"
+      ]
+    },
+    {
+      "id": "agent-evolve",
+      "title": "Evolve (agent → app proposals)",
+      "skill": "agent-requests",
+      "summary": "Evolve tab (Waiting · In progress · Done): the agent looks at the work (notes, tasks, events, where the flow breaks) and the usage log (/api/activity), and proposes what to do now and how ANA should change — at three horizons (tidy · improve · reimagine), with the reason, what changes for people and what others do (links). Do it hands the proposal to the agent, which updates the PRD when what the app does changed.",
+      "anchors": [
+        "/api/evolve",
+        "/api/evolve-act",
+        "evolveView",
+        "function askEvolveAgent",
+        "function refreshEvolve",
+        "function renderEvolve",
+        "reopen: 'new'"
+      ]
+    },
+    {
+      "id": "app-tabs",
+      "title": "Tabs: PRD · Work · Knowledge · Requests · Evolve · Update",
+      "skill": "app-shell",
+      "summary": "One workspace. Six top tabs (a bottom menu on phones), opening on PRD: PRD with Current · History; Work, empty until it is built from the PRD (screens go into #workArea, with sub-tabs if there are several kinds of work); Knowledge with Ontology · Graph; Requests, Evolve and Update, each with Waiting · In progress · Done. Badges count what is waiting.",
+      "anchors": [
+        "function selectTab",
+        "function showTab",
+        "var SUBTABS",
+        "function renderSubtabs",
+        "STATUS_TABS",
+        "workArea",
+        "function syncBottomNav",
+        "bottomnav",
+        "data-reqbadge"
+      ]
+    },
+    {
+      "id": "prd",
+      "title": "PRD (what this ANA is and does)",
+      "skill": "agent-requests",
+      "summary": "PRD tab, first and where a new ANA opens: what this ANA is and does. A new ANA has no PRD — it is written from the first conversation: the person says (or sketches) what they want, the agent asks what it still needs, then in the same turn saves the PRD (sections of prd-template.md) and builds the first Work screen (CLAUDE.md / AGENTS.md). Starter examples and Talk to ANA open the chat; Edit lets a person write it; every save is a new version, History keeps earlier ones (viewable, restorable).",
+      "anchors": [
+        "/api/prd",
+        "PRD_FILE",
+        "function addPrdVersion",
+        "prdView",
+        "function renderPrd",
+        "function refreshPrd",
+        "prd-template.md",
+        "data-starter",
+        "data-talk"
+      ]
+    },
+    {
+      "id": "system-update",
+      "title": "Update tab (check upstream, port with the agent)",
+      "skill": "ana-update",
+      "summary": "Update tab (Waiting · In progress · Done): Check for updates fetches agent-native-agent into .ana/upstream and runs ana-diff.mjs against this ANA. Each missing or partial feature, newer module and shared-runtime difference becomes an item. Bring it in sends the agent a porting instruction with the skill, missing anchors and the upstream path; the agent reports done/fail via /api/update-act. Skipped items stay hidden from later checks.",
+      "anchors": [
+        "/api/update/check",
+        "/api/update-act",
+        "function runUpdateCheck",
+        "function renderUpdates",
+        "UPDATES_FILE",
+        "updateView"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "title": "Knowledge (ontology and graph, filled by the agent)",
+      "skill": "agent-requests",
+      "summary": "Knowledge tab (Ontology · Graph · Documents): one graph of everything here — work items, the things the work is about, and documents — not split into layers. Ontology lists one set of kinds and one set of relations (from work-ontology.js and knowledge.json, with counts; only the ones from knowledge.json can be removed); Graph draws every node and link in one force layout and lists the links people and the agent made (removable). The knowledge starts empty; Ask the agent has it read the work and add to it (POST /api/knowledge, same id = update, same fact = one; a fact may end at a work item). Things outside the ontology are kept and marked new. graph-index.js indexes the one graph with NodeRel (graph-index.sqlite, rebuilt when the sources change) for /api/graph/trace · neighbors · schema.",
+      "anchors": [
+        "/api/knowledge",
+        "KNOWLEDGE_FILE",
+        "function mergeKnowledge",
+        "knowledgeView",
+        "function renderKnowledge",
+        "function kGraphSvg",
+        "function ontology(ws)",
+        "@tykimos/noderel"
+      ]
+    },
+    {
+      "id": "sketch",
+      "title": "Sketch a screen",
+      "skill": "context-chips",
+      "summary": "A blank sketch pad (pen, box, text, eraser; black / red / blue; undo, clear) to draw a rough screen. Double-click writes text in place; texts and boxes (by their edge) can be picked, moved, resized from a corner (or the wheel on text), recolored and deleted. Send to ANA attaches it to the chat as a PNG; the agent builds from it and keeps it in the PRD under Sketches (markdown images from /uploads/ are shown). Opened from the PRD, the start card and the empty Work tab.",
+      "anchors": [
+        "sketchLayer",
+        "function openSketch",
+        "skCanvas",
+        "data-sketch",
+        "md-img"
+      ]
+    },
+    {
+      "id": "documents",
+      "title": "Knowledge › Documents (files the agent reads)",
+      "skill": "agent-requests",
+      "summary": "Knowledge › Documents: people add files (specs, price lists, manuals — up to 25 MB each, button or drag and drop). They are kept in .ana/documents; GET /api/documents lists them with the path the agent reads. Knowledge's Ask the agent reads them, and facts and things can cite a document (items: doc-N), shown as a Doc chip that opens the file. Images, PDF and text open in the browser; everything else (HTML, SVG…) is always a download.",
+      "anchors": [
+        "/api/documents",
+        "DOCS_DIR",
+        "DOC_INLINE",
+        "function uploadDocs",
+        "function renderDocs",
+        "docDrop"
+      ]
+    }
+  ]
+}

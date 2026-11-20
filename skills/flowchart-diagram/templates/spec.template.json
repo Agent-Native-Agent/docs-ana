@@ -1,0 +1,110 @@
+{
+ "_설명": "순서도·관계도 spec. '_'로 시작하는 필드는 설명이라 렌더러가 무시한다. 다 채운 뒤 node scripts/check.mjs 로 검사.",
+ "id": "my-flow",
+ "title": "순서도",
+ "desc": "부제 한 줄",
+ "aria": "",
+ "_grid": "(선택) 기본값 { colWidth:170, colStep:230, marginX:40, rowGap:56 }. 열 폭·간격을 바꿀 때만 쓴다.",
+ "grid": {
+  "colWidth": 170,
+  "colStep": 230,
+  "marginX": 40,
+  "rowGap": 56
+ },
+ "_rows": "행마다 높이 h. 설명 0줄 52 · 1줄 62 · 2줄 80 · 마름모 84 정도. gap = 위 행과의 틈(기본 rowGap). 구역이 바뀌는 행은 틈이 자동으로 커진다.",
+ "rows": [
+  {
+   "h": 52
+  },
+  {
+   "h": 62
+  },
+  {
+   "h": 84
+  },
+  {
+   "h": 56
+  }
+ ],
+ "_zones": "(선택) 행 묶음 구역. tone 'b'는 옅은 파랑.",
+ "zones": [],
+ "_nodes": "id는 영문. kind: box·core·map·ext·inner·terminal·decision. span: 걸칠 열 수. lines: 설명(마름모는 1줄).",
+ "nodes": [
+  {
+   "id": "start",
+   "col": 0,
+   "row": 0,
+   "kind": "terminal",
+   "title": "시작"
+  },
+  {
+   "id": "step",
+   "col": 0,
+   "row": 1,
+   "title": "할 일",
+   "lines": [
+    "설명 한 줄"
+   ]
+  },
+  {
+   "id": "ok",
+   "col": 0,
+   "row": 2,
+   "kind": "decision",
+   "title": "조건?"
+  },
+  {
+   "id": "fix",
+   "col": 1,
+   "row": 2,
+   "title": "고치기",
+   "lines": [
+    "설명 한 줄"
+   ]
+  },
+  {
+   "id": "end",
+   "col": 0,
+   "row": 3,
+   "kind": "terminal",
+   "title": "끝"
+  }
+ ],
+ "_edges": "from/to = 'id:변'(top·bottom·left·right, 비우면 자동). route: auto·h·v·hvh·vhv·hv·vh. card: [시작, 끝] 관계 수. cardSide: ['below'|'above'|'left'|'right', …]. label·labelAt('gap:<행>')·labelDx·labelDy·labelSide. dashed·both·arrow(false면 촉 없음)·merge(합류)·dot('first'). via: 'gap:<행>'|'gapc:<열>'.",
+ "edges": [
+  {
+   "from": "start:bottom",
+   "to": "step:top"
+  },
+  {
+   "from": "step:bottom",
+   "to": "ok:top"
+  },
+  {
+   "from": "ok:right",
+   "to": "fix:left",
+   "label": "아니요"
+  },
+  {
+   "from": "fix:top",
+   "to": "step:right",
+   "route": "vh",
+   "label": "다시"
+  },
+  {
+   "from": "ok:bottom",
+   "to": "end:top",
+   "label": "예"
+  }
+ ],
+ "_pills": "(선택) 위쪽 강조 띠: { col, text, y? }",
+ "pills": [],
+ "_minWidth": "휴대폰에서 이 폭 아래로 줄이지 않고 옆으로 밀게 한다. 0이면 화면에 맞춰 줄인다. 기본 min(그림 폭, 760).",
+ "minWidth": 0,
+ "_tables": "(선택) 그림 아래 표. keyCol = 파란 굵은 글씨 열(관계 수 열 등). 셀에 **굵게** 가능.",
+ "tables": [],
+ "notes": [],
+ "_groups": "(v1.2 선택) 묶음: {title, nodes:[id…], tone:\"blue|green|amber\"} — 점선 테두리",
+ "groups": [],
+ "_v12": "상자 kind 추가: actor(원형 역할) · accent(강조 1곳) · list(items 목록) · plain. 선: tone(blue·green·amber), via \"top\"|\"bottom\", 변 자리 \"id:bottom@0.25\". 상자 dx·dy(px), col 소수 가능."
+}

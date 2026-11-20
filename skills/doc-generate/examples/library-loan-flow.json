@@ -1,0 +1,26 @@
+{
+  "id": "library-loan-flow",
+  "title": "도서 대출 처리",
+  "desc": "판단에서 갈라지고 등록 뒤 되돌아가는 순서도 예시",
+  "grid": { "colWidth": 170, "colStep": 220, "marginX": 24, "rowGap": 40 },
+  "rows": [ { "h": 52 }, { "h": 84 }, { "h": 84 }, { "h": 62 }, { "h": 56 } ],
+  "nodes": [
+    { "id": "start", "col": 0, "row": 0, "kind": "terminal", "title": "시작", "lines": ["회원증·도서 제시"] },
+    { "id": "member", "col": 0, "row": 1, "kind": "decision", "title": "유효한 회원?" },
+    { "id": "join", "col": 1, "row": 1, "title": "회원 등록", "lines": ["신분 확인 · 회원증 발급"] },
+    { "id": "limit", "col": 0, "row": 2, "kind": "decision", "title": "대출 권수 남음?" },
+    { "id": "back", "col": 1, "row": 2, "title": "반납 안내", "lines": ["연체·대출 중인 도서 확인"] },
+    { "id": "loan", "col": 0, "row": 3, "kind": "core", "title": "대출 처리", "lines": ["도서 바코드 · 반납일 지정"] },
+    { "id": "end", "col": 0, "row": 4, "kind": "terminal", "title": "끝", "lines": ["반납일 문자 안내"] }
+  ],
+  "edges": [
+    { "from": "start:bottom", "to": "member:top" },
+    { "from": "member:right", "to": "join:left", "label": "아니요" },
+    { "from": "join:top", "to": "start:right", "route": "vh", "label": "다시 확인" },
+    { "from": "member:bottom", "to": "limit:top", "label": "예" },
+    { "from": "limit:right", "to": "back:left", "label": "아니요" },
+    { "from": "limit:bottom", "to": "loan:top", "label": "예" },
+    { "from": "loan:bottom", "to": "end:top" }
+  ],
+  "minWidth": 0
+}

@@ -1,0 +1,33 @@
+{ "id": "ex-civil", "title": "온라인 민원 처리 구성도", "desc": "",
+  "aria": "구성도: 민원인은 민원 포털로 신청하고, 담당 부서의 처리 업무는 접수·배정과 심사 엔진을 거쳐 결과를 통지한다. 민원 기록은 통합 저장소에 남고, 본인 확인 서비스와 행정정보 공동이용과 주고받는다.",
+  "grid": { "colWidth": 196, "colStep": 270, "marginX": 30, "rowGap": 42 },
+  "rows": [ {"h": 78}, {"h": 96}, {"h": 96}, {"h": 64} ],
+  "groups": [
+    { "title": "담당 부서", "nodes": ["deptA", "deptB"], "tone": "green" },
+    { "title": "민원 처리 시스템 · 기관 내부망", "nodes": ["portal", "route", "judge", "notify", "store"], "tone": "blue" }
+  ],
+  "nodes": [
+    { "id": "citizen", "col": 0, "row": 0, "kind": "actor", "title": "민원인", "w": 78, "h": 78 },
+    { "id": "portal", "col": 1, "row": 0, "span": 2, "title": "민원 포털", "lines": ["신청서 작성 · 첨부 · 진행 조회"] },
+    { "id": "auth", "col": 3, "row": 0, "kind": "ext", "title": "본인 확인", "lines": ["간편 인증 · 공동 인증서"] },
+    { "id": "deptA", "col": 0, "row": 1, "kind": "list", "title": "인허가 부서", "items": ["건축 · 영업 신고", "점용 허가"] },
+    { "id": "route", "col": 1, "row": 1, "kind": "accent", "title": "접수 · 배정", "lines": ["유형 분류 · 담당자 배정", "처리 기한 계산"] },
+    { "id": "judge", "col": 2, "row": 1, "kind": "core", "title": "심사 엔진", "lines": ["요건 점검표 · 서류 대조", "보완 요청 판단"] },
+    { "id": "deptB", "col": 0, "row": 2, "kind": "list", "title": "증명 발급 부서", "items": ["제증명 발급", "열람 · 사본"] },
+    { "id": "notify", "col": 1, "row": 2, "span": 2, "title": "결과 통지", "lines": ["문자 · 전자우편 · 포털 알림 · 전자 문서 발급"] },
+    { "id": "share", "col": 3, "row": 2, "kind": "ext", "title": "행정정보 공동이용", "lines": ["주민 · 사업자 정보 조회"] },
+    { "id": "store", "col": 1, "row": 3, "span": 2, "kind": "inner", "title": "통합 저장소", "lines": ["민원 기록 · 첨부 원본 · 처리 이력"] }
+  ],
+  "edges": [
+    { "from": "citizen:right", "to": "portal:left", "tone": "blue", "label": "신청" },
+    { "from": "portal:right", "to": "auth:left", "tone": "blue", "both": true, "label": "본인 확인" },
+    { "from": "portal:bottom@0.2103", "to": "route:top", "route": "v" },
+    { "from": "deptA:right", "to": "route:left", "tone": "green", "label": "검토" },
+    { "from": "route:right", "to": "judge:left", "label": "심사" },
+    { "from": "judge:top", "to": "portal:bottom@0.7897", "route": "v", "dashed": true, "label": "보완 요청", "labelSide": "right" },
+    { "from": "deptB:right", "to": "notify:left", "tone": "green", "label": "발급" },
+    { "from": "judge:bottom", "to": "notify:top@0.7897", "route": "v", "label": "결과" },
+    { "from": "share:left", "to": "notify:right", "tone": "green", "label": "조회" },
+    { "from": "notify:bottom@0.5", "to": "store:top", "route": "v", "label": "기록" }
+  ],
+  "minWidth": 0 }

@@ -1,0 +1,23 @@
+# ANA runtime state — never commit conversation ledgers / board data / pane ids
+.ana/
+transcript.jsonl
+data/
+*.jsonl
+.ana_pane_id
+
+# deps / os
+node_modules/
+.DS_Store
+*.log
+dist/
+
+# 문서 · 상태 · 개인 설정은 저장소에 넣지 않는다
+CLAUDE.local.md
+samples/
+ref/
+*.hwp
+*.hwpx
+*.docx
+*.pptx
+*.pdf
+.env*

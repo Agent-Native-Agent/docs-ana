@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+{{THEME_CSS}}
+html, body { margin: 0; background: var(--surface-2); color: var(--text); }
+body { font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.card { background: var(--surface); border-radius: 16px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 8px; }
+.head h2 { margin: 0; font-size: 20px; }
+.head span { color: var(--text-weak); font-size: 13px; }
+@media (max-width: 640px) { main { padding: 12px; } .card { padding: 12px; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="card">
+    <div class="head"><h2>{{TITLE}}</h2><span>{{DESC}}</span></div>
+    {{FIGURE}}
+  </section>
+</main>
+</body>
+</html>
