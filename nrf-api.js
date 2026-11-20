@@ -79,7 +79,7 @@ const IMG_MIME = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jp
 function createNrfApi(core, opts) {
   const { DATA_DIR, ID_HEADER = '', USERS_FILE = '', dash = null } = opts;
   // 관리자: 로고 햄버거(ANA 메뉴)·컨텍스트 칩·에이전트 대화가 보이는 사람. NRF_ADMINS(쉼표) 로 바꾼다.
-  const ADMINS = new Set(String(process.env.NRF_ADMINS || '').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean));
+  const ADMINS = new Set(String([process.env.NRF_ADMINS || '', process.env.NRF_LOCAL_USER || (process.env.CODESPACES === 'true' ? `${process.env.GITHUB_USER || 'owner'}@codespace` : '')].join(',')).split(',').map((x) => x.trim().toLowerCase()).filter(Boolean));
   const isAdmin = (email) => ADMINS.has(email) || (!ID_HEADER && email === 'ana');
   const DOCS = path.join(DATA_DIR, 'nrf', 'docs');
   fs.mkdirSync(DOCS, { recursive: true });
@@ -109,12 +109,16 @@ function createNrfApi(core, opts) {
   //   손님          = 유효한 손님 토큰 → 'g-<손님id>.<문서id>@guest'
   //   ''            = 게이트웨이를 거쳐 왔지만 로그인도 토큰도 없는 사람(아무것도 못 한다)
   //   'ana'         = 이 서버 안에서 온 호출(에이전트·스크립트) — 게이트웨이 표시가 없는 요청만
+  // NRF_LOCAL_USER: 게이트웨이 없이 혼자 쓰는 자리(GitHub Codespaces — 포트가 Private 라 주인만 들어온다)에서 들어온 사람의 이름(이메일 꼴).
+  // Codespace 안이면(CODESPACES=true) 따로 정하지 않아도 「<GitHub 아이디>@codespace」로 본다. 게이트웨이 헤더(ANA_IDENTITY_HEADER)가 오면 그것이 먼저다.
+  const LOCAL_USER = String(process.env.NRF_LOCAL_USER || (process.env.CODESPACES === 'true' ? `${process.env.GITHUB_USER || 'owner'}@codespace` : '')).trim().toLowerCase();
   const viaGateway = (req) => !!(req.headers['x-anahub-public-view'] || req.headers['x-forwarded-host'] || req.headers['x-forwarded-for']);
   function who(req, url) {
     const e = ID_HEADER ? String(req.headers[ID_HEADER.toLowerCase()] || '').trim().toLowerCase() : '';
     if (e) return e;
     const tok = String(req.headers['x-nrf-guest'] || (url && url.searchParams.get('g')) || '');
     if (tok) { const g = guestOf(tok); if (g) return g; }
+    if (LOCAL_USER) return LOCAL_USER;      // 혼자 쓰는 자리(Codespace 등): 로그인 게이트웨이 없이 들어온 사람 = 이 자리의 주인
     return viaGateway(req) ? '' : 'ana';
   }
   const isGuest = (w) => /^g-[a-f0-9]{8}\.[a-f0-9]{12}@guest$/.test(w);
