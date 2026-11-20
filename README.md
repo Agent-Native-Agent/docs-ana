@@ -1,3 +1,15 @@
+# Docs ANA
+
+An ANA for co-editing and reviewing Hangul (HWP · HWPX) and Word documents — see **[DOCS-ANA.md](DOCS-ANA.md)**.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Agent-Native-Agent/docs-ana?ref=main)
+
+Run in the browser: the button above → when the Codespace is ready, Ports → **Docs ANA (8809)** → Open in Browser. The first build takes a few minutes (installs Chromium · LibreOffice · Korean fonts).
+
+Below is the README of agent-native-agent, the base of this repository.
+
+---
+
 <div align="center">
 
 <img src="docs/assets/ana-logo.png" width="92" alt="ANA logo" />

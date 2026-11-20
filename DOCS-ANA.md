@@ -9,7 +9,12 @@
 - 생성스킬: 표 기반 다이어그램(한/글 표) · 이미지 기반 순서도 · 흐름도 · 개념도(목표모델) · 목차 · 메모 전환
 - 내보내기: PDF · 한/글(HWPX) · Word(DOCX) · PowerPoint(PPTX) — Word · PowerPoint 는 PDF 와 같은 쪽 · 같은 자리(글 고칠 수 있음)
 
-## 실행
+## 바로 띄우기(브라우저)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Agent-Native-Agent/docs-ana?ref=main)
+
+Codespace 가 만들어지면 Ports → **Docs ANA (8809)** → Open in Browser. 포트는 Private 로 두세요. 조직 저장소라 조직이 Codespaces 를 허용해야 만들 수 있습니다(조직 설정 → Codespaces).
+
+## 실행(내 서버)
 ```bash
 npm install          # 의존성은 최소(기본 ANA 와 같음)
 PORT=8865 node server.js

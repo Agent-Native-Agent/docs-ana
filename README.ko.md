@@ -1,3 +1,15 @@
+# Docs ANA
+
+한/글(HWP · HWPX) · Word 문서를 여러 사람이 함께 고치고 검토하는 ANA 입니다 — 자세한 것은 **[DOCS-ANA.md](DOCS-ANA.md)**.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Agent-Native-Agent/docs-ana?ref=main)
+
+브라우저에서 바로 띄우기: 위 단추 → Codespace 가 만들어지면 Ports → **Docs ANA (8809)** → Open in Browser. 처음 띄울 때 프로그램 설치로 몇 분 걸립니다.
+
+아래는 이 저장소의 바탕인 agent-native-agent 의 설명입니다.
+
+---
+
 <div align="center">
 
 <img src="docs/assets/ana-logo.png" width="92" alt="ANA logo" />
